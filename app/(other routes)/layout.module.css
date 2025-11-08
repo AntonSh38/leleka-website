@@ -4,14 +4,26 @@
   height: 100vh;
 }
 
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .nav-wrapper {
+  display: flex;
+  flex-direction: row;
   padding: 24px 20px 0px;
-  width: 375px;
   height: 24px;
   margin-bottom: 16px;
 }
 
 @media (min-width: 1440px) {
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 32px;
+  }
+
   .nav-wrapper {
     background-color: rgb(73, 73, 31);
   }

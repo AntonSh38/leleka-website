@@ -1,4 +1,13 @@
 .top-menu {
-  padding: 16px 20px;
+  margin: 16px 20px;
   height: 68px;
+}
+
+@media (width: 768px) {
+  .top-menu {
+    width: 704px;
+    height: 36px;
+    margin: 16px 32px;
+    height: 68px;
+  }
 }

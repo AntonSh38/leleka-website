@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <GreetingBlock />
-      Сторінка Головна
+      Сторінка Головна мій день
     </div>
   );
 }

@@ -81,3 +81,6 @@
   color: var(--color-scheme-text);
   background: var(--opacity-neutral-darkest-5);
 }
+
+@media (width: 768px) {
+}

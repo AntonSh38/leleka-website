@@ -16,10 +16,9 @@ export default function HomeLayout({
       {width < 1440 ? <Header /> : null}
       <main className={css["main"]}>
         {width >= 1440 ? <SideBar /> : null}
-        <div>
-          <div className={css["nav-wrapper"]}>
-            <Breadcrumbs />
-          </div>
+        <div className={css["main-content"]}>
+          <Breadcrumbs />
+
           {children}
         </div>
       </main>

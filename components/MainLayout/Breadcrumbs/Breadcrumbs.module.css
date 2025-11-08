@@ -1,5 +1,6 @@
 @media (max-width: 767.8px) {
   .breadcrumb-block {
+    padding: 16px 20px 0px;
     display: flex;
     width: 300px;
     height: 24px;
@@ -13,7 +14,8 @@
   .breadcrumb-block {
     padding: 24px 32px 0px;
     width: 1128px;
-    height: 109px;
+    display: flex;
+    align-items: center;
     background-color: rgb(73, 73, 31);
   }
 }
