@@ -1,11 +1,5 @@
-import GreetingBlock from "@/components/DashboardPage/GreetingBlock/GreetingBlock";
-import styles from "./page.module.css";
+import React from "react";
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <GreetingBlock />
-      Сторінка Головна мій день
-    </div>
-  );
+export default function page() {
+  return <div></div>;
 }
