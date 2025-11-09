@@ -1,5 +1,6 @@
 import { User, UserData } from "@/types/user";
 import { nextServerApi } from "./api";
+import { BabyDetails, GreetingResponse, MomDetails } from "@/types/journey";
 
 export interface SessionResponse {
   success: boolean;
@@ -60,3 +61,59 @@ export async function fetchEmotions(): Promise<{
 
   return res.data;
 }
+
+// Подорож
+
+export async function getGreeting(
+  isAuthorized: boolean
+): Promise<GreetingResponse> {
+  const endpoint = isAuthorized ? "/weeks/greeting" : "/weeks/greeting/public";
+  const { data } = await nextServerApi.get<GreetingResponse>(endpoint);
+  return data;
+}
+
+export async function getBabyDetails(weekNumber: number): Promise<BabyDetails> {
+  const { data } = await nextServerApi.get<BabyDetails>(
+    `/weeks/${weekNumber}/baby`
+  );
+  return data;
+}
+
+export async function getMomDetails(weekNumber: number): Promise<MomDetails> {
+  const { data } = await nextServerApi.get<MomDetails>(
+    `/weeks/${weekNumber}/mom`
+  );
+  return data;
+}
+
+export interface UserToUpdate {
+  name?: string;
+  email?: string;
+  dueDate?: string;
+  babyGender?: string;
+}
+
+export const updateUser = async (updatedUser: UserToUpdate) => {
+  const { data } = await nextServerApi.patch<User>(
+    "/users/current",
+    updatedUser
+  );
+  return data;
+};
+
+export const uploadImage = async (file: File) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const res = await nextServerApi.patch<User>(
+    "/users/current/avatars",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return res.data;
+};
