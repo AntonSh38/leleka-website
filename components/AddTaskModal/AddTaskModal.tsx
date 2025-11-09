@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styles from "./AddTaskModal.module.css";
+import { useTaskModalStore } from "@/lib/store/taskModalStore";
 
 export default function AddTaskModal() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDate, setNewTaskDate] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen, openModal, closeModal } = useTaskModalStore();
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +20,7 @@ export default function AddTaskModal() {
           <button
             type="button"
             className={styles.closeButton}
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => closeModal()}
           >
             ✕
           </button>
