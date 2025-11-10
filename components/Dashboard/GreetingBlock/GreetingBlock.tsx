@@ -12,13 +12,17 @@ export default function GreetingBlock() {
   //   return <p className={css.loading}>Loading...</p>;
   // }
 
-  // if (isError || !user?.name) {
-  //   return (
-  //     <div className={css.block}>
-  //       <p className={css.error}>Доброго дня!</p>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return <p className={css.loading}>Loading...</p>;
+  }
+
+  if (isError || !user?.name) {
+    return (
+      <div className={css.block}>
+        <p className={css.title}>Доброго дня!</p>
+      </div>
+    );
+  }
   return (
     <div className={css.block}>
       <h2 className={css.title}>Доброго ранку, {user?.name}!</h2>
