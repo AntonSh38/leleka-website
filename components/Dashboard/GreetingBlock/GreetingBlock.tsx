@@ -2,11 +2,13 @@
 
 import { useAuthStore } from "@/lib/store/authStore";
 import css from "./GreetingBlock.module.css";
-// import { useAuth } from "@/hooks/useAuth";
 
 export default function GreetingBlock() {
-  // const { user, isLoading, isError } = useAuth();
   const { user } = useAuthStore();
+
+  // if (isLoading) {
+  //   return <p className={css.loading}>Loading...</p>;
+  // }
 
   // if (isLoading) {
   //   return <p className={css.loading}>Loading...</p>;
@@ -15,7 +17,7 @@ export default function GreetingBlock() {
   // if (isError || !user?.name) {
   //   return (
   //     <div className={css.block}>
-  //       <p className={css.error}>Доброго дня!</p>
+  //       <p className={css.title}>Доброго дня!</p>
   //     </div>
   //   );
   // }
