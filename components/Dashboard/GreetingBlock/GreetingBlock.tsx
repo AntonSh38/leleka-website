@@ -2,7 +2,6 @@
 
 import { useAuthStore } from "@/lib/store/authStore";
 import css from "./GreetingBlock.module.css";
-// import { useAuth } from "@/hooks/useAuth";
 
 export default function GreetingBlock() {
   const { user } = useAuthStore();
