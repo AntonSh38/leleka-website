@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <GreetingBlock />
-      <main className={styles.main}>
+      <div className={styles.main}>
         <div>
           <div className={styles.greetingstatus}>
             <StatusBlock />
@@ -19,13 +19,12 @@ export default function Home() {
             <BabyTodayCard />
             <MomTipCard />
           </div>
-          <div>
-            <TaskReminderCard />
-            <FeelingCard />
-          </div>
-          <div>тут буде Den секція</div>
         </div>
-      </main>
+        <div className={styles.right_block}>
+          <TaskReminderCard />
+          <FeelingCard />
+        </div>
+      </div>
     </div>
   );
 }
