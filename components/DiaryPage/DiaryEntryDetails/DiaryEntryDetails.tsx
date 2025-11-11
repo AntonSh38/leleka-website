@@ -4,15 +4,16 @@ import Image from "next/image";
 import css from "./DiaryEntryDetails.module.css";
 import { useSelectedNoteStore } from "@/lib/store/selectedNoteStore";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { DiaryNote, deleteNote } from "@/lib/api/diaryApi";
 import { useNoteModalStore } from "@/lib/store/modalNoteStore";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function DiaryEntryDetails() {
   const selectedNote = useSelectedNoteStore((s) => s.selectedNote);
   const setSelectedNote = useSelectedNoteStore((s) => s.setSelectedNote);
   const openNoteModal = useNoteModalStore((s) => s.openNoteModal);
-
+  const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // якщо selectedNote є — беремо її. Інакше пробуємо знайти в кеші ["notes"].
@@ -64,16 +65,18 @@ export default function DiaryEntryDetails() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
   });
-
+  if (!note) {
+    return null;
+  }
   const handleDelete = (id: string) => {
     if (!id) return;
     deleteMutation.mutate(id);
     setSelectedNote(null);
   };
-
-  if (!note) {
-    return null;
-  }
+  const handleConfirm = () => {
+    handleDelete(note._id);
+    setIsOpen(false);
+  };
 
   const handleEdit = (note: DiaryNote) => {
     setSelectedNote(note); // 1) поставити note в стор
@@ -107,7 +110,7 @@ export default function DiaryEntryDetails() {
                 alt="delete"
                 className={css["delete-icon"]}
                 onClick={() => {
-                  handleDelete(note._id);
+                  setIsOpen(true);
                 }}
               />
             </div>
@@ -126,6 +129,14 @@ export default function DiaryEntryDetails() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={isOpen}
+        title="Ви дійсно хочете видалити нотатку?"
+        confirmBtnText="Так, видаляємо"
+        cancelBtnText="Ні, залишаємо"
+        onCancel={() => setIsOpen(false)}
+        onConfirm={handleConfirm}
+      />
     </section>
   );
 }
