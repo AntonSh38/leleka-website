@@ -4,7 +4,6 @@ import SideBar from "@/components/MainLayout/SideBar/SideBar";
 import Breadcrumbs from "@/components/MainLayout/Breadcrumbs/Breadcrumbs";
 import Header from "@/components/MainLayout/Header/Header";
 import { useWindowSize } from "@/hooks/useWindowsSize";
-import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function HomeLayout({
   children,
@@ -20,7 +19,6 @@ export default function HomeLayout({
         <div className={css["main-content"]}>
           <Breadcrumbs />
           {children}
-          <ConfirmationModal />
         </div>
       </main>
     </>
