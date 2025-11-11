@@ -5,6 +5,7 @@ interface ModalOptions {
   confirmBtnText: string;
   canceleBtnText: string;
   onConfirm: () => Promise<void> | void;
+  onCancel?: () => void;
 }
 
 interface ModalState {

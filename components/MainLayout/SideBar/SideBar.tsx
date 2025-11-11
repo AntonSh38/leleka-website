@@ -4,16 +4,16 @@ import css from "./SideBar.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { logoutRequest } from "@/lib/api/auth";
-import { useModalStore } from "@/lib/store/modalStore";
 import { useSidebarStore } from "@/lib/store/sidebarStore";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useEffect, useState } from "react";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function SideBar() {
   const { isOpen, closeSidebar } = useSidebarStore();
-  const { openModal } = useModalStore();
   const { user, clearIsAuthenticated } = useAuthStore();
   const [isMobile, setIsMobile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,17 +25,23 @@ export default function SideBar() {
   }, []);
 
   const handleLogoutClick = () => {
-    openModal({
-      title: "Ви точно хочете вийти?",
-      confirmBtnText: "Так",
-      canceleBtnText: "Ні",
-      onConfirm: async () => {
-        console.log("Вихід підтверджено");
-        await logoutRequest();
-        clearIsAuthenticated();
-        closeSidebar();
-      },
-    });
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    try {
+      await logoutRequest();
+      clearIsAuthenticated();
+      closeSidebar();
+    } catch (error) {
+      console.error("Помилка виходу:", error);
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleCancelLogout = () => {
+    setIsModalOpen(false);
   };
 
   const isAuth = Boolean(user);
@@ -167,6 +173,15 @@ export default function SideBar() {
           </div>
         </div>
       </aside>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        title="Ви точно хочете вийти?"
+        confirmBtnText="Так"
+        cancelBtnText="Ні"
+        onConfirm={handleConfirmLogout}
+        onCancel={handleCancelLogout}
+      />
     </>
   );
 }
