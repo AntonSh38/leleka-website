@@ -1,15 +1,11 @@
 .pageWrapper {
   height: calc(100% - 72px);
   display: flex;
-  align-items: center;
 }
 
 @media (min-width: 1440px) {
   .pageWrapper {
     height: 100%;
-  }
-  .pageWrapper > div {
-    padding-top: 72px;
   }
 }
 
@@ -50,7 +46,6 @@
 }
 
 .header {
-  position: block;
   margin: 0 auto;
   display: flex;
   align-items: center;
