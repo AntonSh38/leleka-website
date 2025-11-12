@@ -43,13 +43,14 @@ export default function SideBar() {
 
       toast.success("Ви успішно вийшли з акаунту!");
       queryClient.clear();
-
+      window.location.href = "/";
       if (pathname === "/") {
         setTimeout(async () => {
           await queryClient.invalidateQueries({ queryKey: ["babyData"] });
         }, 300);
       } else {
         router.push("/");
+        window.location.href = "/";
       }
     } catch (error) {
       console.error("Помилка виходу:", error);
