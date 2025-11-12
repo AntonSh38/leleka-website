@@ -42,6 +42,7 @@ export default function SideBar() {
       closeSidebar();
 
       toast.success("Ви успішно вийшли з акаунту!");
+      queryClient.clear();
 
       if (pathname === "/") {
         setTimeout(async () => {

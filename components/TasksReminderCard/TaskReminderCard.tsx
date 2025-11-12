@@ -25,6 +25,7 @@ export default function TaskReminderCard() {
     queryFn: fetchTasks,
     placeholderData: keepPreviousData,
     enabled: !!user,
+    refetchOnMount: "always",
   });
 
   const { mutate: toggleStatus } = useMutation({
@@ -41,7 +42,6 @@ export default function TaskReminderCard() {
     }
     openModal();
   };
-
 
   return (
     <div className={styles.section}>

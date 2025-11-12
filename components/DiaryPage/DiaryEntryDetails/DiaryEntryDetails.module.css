@@ -1,5 +1,4 @@
 .diary-details-container {
-  padding: 32px 20px;
   margin: 0 auto;
   background: var(--color-scheme-background);
 }
@@ -81,9 +80,8 @@
   background: var(--opacity-neutral-darkest-5);
 }
 
-@media (width: 768px) {
+@media (min-width: 768px) {
   .diary-details-container {
-    padding: 32px 20px;
     margin: 0 auto;
     background: var(--color-scheme-background);
   }
