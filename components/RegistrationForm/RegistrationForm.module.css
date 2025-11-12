@@ -220,6 +220,6 @@
 @media (min-width: 1440px) {
   .image {
     display: block;
-    height: 100vh;
+    height: 900px;
   }
 }
