@@ -14,10 +14,8 @@ export default function DiaryEntryCard(noteDetails: DiaryNote) {
   const handleClick = () => {
     if (!noteDetails._id) return;
     if (width >= 1440) {
-      // desktop: зберігаємо повну нотатку в store — правий панель візьме її напряму
       setSelectedNote(noteDetails);
     } else {
-      // mobile/tablet: зберігаємо теж, потім навігація на окрему сторінку
       setSelectedNote(noteDetails);
       router.push(`/diary/${noteDetails._id}`);
     }

@@ -21,8 +21,6 @@ export default function DiaryList() {
     refetchOnMount: false,
   });
 
-  console.log(data);
-
   return (
     <section className={css["diary-list-container"]}>
       <div className={css["diary-list-block"]}>
@@ -36,14 +34,16 @@ export default function DiaryList() {
               width={24}
               height={24}
               alt="add icon"
-              onClick={() => openNoteModal()}
+              onClick={() => {
+                useSelectedNoteStore.getState().setSelectedNote(null);
+                openNoteModal();
+              }}
             ></Image>
           </div>
         </div>
         <ul className={css["diary-list"]}>
           {data && data.diaryNotes.length > 0
             ? data.diaryNotes.map((note) => {
-                console.log(data.diaryNotes.length);
                 return (
                   <li key={note._id} className={css["diary-item"]}>
                     <DiaryEntryCard {...note} />

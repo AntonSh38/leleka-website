@@ -54,6 +54,8 @@
 
 .diary-item-root {
   cursor: pointer;
+  overflow: hidden;
+  height: 65px;
 }
 
 @media (width: 768px) {
