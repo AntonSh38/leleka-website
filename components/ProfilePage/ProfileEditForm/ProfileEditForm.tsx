@@ -1,22 +1,33 @@
 "use client";
 
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FieldProps,
+  FormikHelpers,
+} from "formik";
 import styles from "./ProfileEditForm.module.css";
 import { useId } from "react";
 import Select from "@/components/SelectComponent/Select";
+import { useState } from "react";
+import { useAuthStore } from "@/lib/store/authStore";
+import { updateUser } from "@/lib/api/clientApi";
+import { UserData } from "@/types/user";
 
-export type Gender = "Чоловіча" | "Жіноча" | "";
+export type Gender = "Чоловіча" | "Жіноча" | "Невідомо" | "";
 
 export interface ProfileFormValues {
   name: string;
   email: string;
-  gender: Gender;
+  babyGender: Gender;
   dueDate: string;
 }
 
 interface GenderOption {
-  value: Exclude<Gender, "">; // тільки "Чоловіча" або "Жіноча"
+  value: Exclude<Gender, "">;
   label: string;
 }
 
@@ -26,20 +37,73 @@ export const profileValidationSchema = Yup.object({
     .email("Некоректна пошта")
     .required("Пошта є обов’язковою"),
   gender: Yup.string()
-    .oneOf(["Чоловіча", "Жіноча"], "Оберіть стать")
+    .oneOf(["Чоловіча", "Жіноча", "Невідомо", ""], "Оберіть стать")
     .required("Оберіть стать"),
   dueDate: Yup.string().required("Оберіть дату"),
 });
 
 export default function ProfileEditForm() {
   const fieldId = useId();
-  const handleSubmit = (values: ProfileFormValues) => {
-    console.log("send form values", values);
+  const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
+
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // мапа з UI значення -> бекенд енум
+  const mapBabyGenderToBackend = (g: Gender): "girl" | "boy" | "unknown" => {
+    if (g === "Чоловіча") return "boy";
+    if (g === "Жіноча") return "girl";
+    return "unknown";
+  };
+
+  const handleSubmit = async (
+    values: ProfileFormValues,
+    { setSubmitting }: FormikHelpers<ProfileFormValues>
+  ) => {
+    setSubmitError(null);
+    setSuccessMessage(null);
+    setSubmitting(true);
+
+    try {
+      // Підготуйте payload відповідно до бекенду
+      const payload: Record<string, unknown> = {
+        name: values.name,
+        email: values.email,
+        // бекенд чекає babyGender як "girl" | "boy" | "unknown"
+        babyGender: mapBabyGenderToBackend(values.babyGender),
+        dueDate: values.dueDate,
+      };
+      console.log(payload);
+      // Виклик API через Next.js proxy (updateUser)
+      const updatedUser = await updateUser(payload);
+
+      // Оновлюємо локальний Zustand-юзер (мердж з повернутими даними)
+      setUser({ ...user, ...updatedUser } as UserData);
+
+      setSuccessMessage("Профіль успішно оновлено");
+    } catch (err: unknown) {
+      let message = "Помилка при збереженні";
+      console.log(submitError, successMessage);
+      if (typeof err === "string") {
+        message = err;
+      } else if (err && typeof err === "object") {
+        const e = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        message = e.response?.data?.message ?? e.message ?? message;
+      }
+
+      setSubmitError(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Formik
-      initialValues={{ name: "", email: "", gender: "", dueDate: "" }}
+      initialValues={{ name: "", email: "", babyGender: "", dueDate: "" }}
       validationSchema={profileValidationSchema}
       onSubmit={handleSubmit}
     >
@@ -68,7 +132,6 @@ export default function ProfileEditForm() {
               className={styles.error}
             />
           </div>
-
           <div className={styles.profilefield}>
             <label htmlFor="email" className={styles.profilelabel}>
               Пошта
@@ -92,7 +155,6 @@ export default function ProfileEditForm() {
               className={styles.error}
             />
           </div>
-
           <div className={styles.profilefield}>
             <label htmlFor="gender" className={styles.profilelabel}>
               Стать дитини
@@ -107,6 +169,7 @@ export default function ProfileEditForm() {
                 const options: GenderOption[] = [
                   { value: "Чоловіча", label: "Хлопчик" },
                   { value: "Жіноча", label: "Дівчинка" },
+                  { value: "Невідомо", label: "Ще не знаю" },
                 ];
 
                 const loadOptions = (
@@ -142,7 +205,6 @@ export default function ProfileEditForm() {
               className={styles.error}
             />
           </div>
-
           <div className={styles.profilefield}>
             <label htmlFor="dueDate" className={styles.profilelabel}>
               Планова дата пологів
@@ -160,7 +222,6 @@ export default function ProfileEditForm() {
               )}
             </Field>
           </div>
-
           <div className={styles.profileactions}>
             <button
               type="button"

@@ -8,18 +8,21 @@ import AddDiaryEntryForm from "@/components/AddDiaryEntryForm/AddDiaryEntryForm"
 import { fetchNotes, FetchNotesResponse } from "@/lib/api/diaryApi";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useNoteModalStore } from "@/lib/store/modalNoteStore";
+import { useSelectedNoteStore } from "@/lib/store/selectedNoteStore";
 
 export default function DiaryList() {
   const { isOpen, openNoteModal, closeNoteModal } = useNoteModalStore();
+  const selectedNote = useSelectedNoteStore((s) => s.selectedNote);
 
   const { data } = useQuery<FetchNotesResponse>({
     queryKey: ["notes"],
-    queryFn: () => fetchNotes({}),
+    queryFn: () => fetchNotes({ page: 1, limit: 100 }),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
 
   console.log(data);
+
   return (
     <section className={css["diary-list-container"]}>
       <div className={css["diary-list-block"]}>
@@ -40,24 +43,29 @@ export default function DiaryList() {
         <ul className={css["diary-list"]}>
           {data && data.diaryNotes.length > 0
             ? data.diaryNotes.map((note) => {
+                console.log(data.diaryNotes.length);
                 return (
                   <li key={note._id} className={css["diary-item"]}>
                     <DiaryEntryCard {...note} />
-                    {/* {note._id};{note.date}; {note.description};{" "}
-                  {note.emotions.map((emotion) => {
-                    return <p key={emotion._id}>{emotion.title}</p>;
-                  })}
-                  ; */}
                   </li>
                 );
               })
             : ""}
-          {!data && <p style={{ padding: "20px" }}>Наразі нотаток немає...</p>}
+          {data?.totalCount === 0 && (
+            <p style={{ padding: "20px" }}>
+              Наразі записи у щоденнику відсутні
+            </p>
+          )}
         </ul>
       </div>
       {isOpen && (
-        <AddDiaryEntryModal onClose={() => closeNoteModal()}>
-          <AddDiaryEntryForm />
+        <AddDiaryEntryModal
+          onClose={() => {
+            closeNoteModal();
+            useSelectedNoteStore.getState().setSelectedNote(null);
+          }}
+        >
+          <AddDiaryEntryForm editingNote={selectedNote ?? null} />
         </AddDiaryEntryModal>
       )}
     </section>

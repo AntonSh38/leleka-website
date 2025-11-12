@@ -1,13 +1,11 @@
 .profileform {
   max-width: 375px;
-  margin: 0 auto;
-  padding: 32px 20px 55px 20px;
+  padding: 32px 0 55px 0;
   background-color: #fff;
 }
 
 @media screen and (min-width: 768px) {
   .profileform {
-    padding: 0 32px;
     max-width: 768px;
   }
 }
@@ -124,13 +122,6 @@
   font-family: "Lato", sans-serif;
 }
 
-@media screen and (min-width: 1440px) {
-  .profilecancel,
-  .profilesave {
-    font-size: 16px;
-  }
-}
-
 .profilecancel {
   border-bottom: 4px solid var(--opacity-neutral-darkest-15);
   border-radius: 100px;
@@ -147,8 +138,7 @@
 
 @media screen and (min-width: 768px) {
   .profilecancel {
-    max-width: 135px;
-    height: 38px;
+    max-width: 150px;
   }
 }
 
@@ -169,14 +159,13 @@
 }
 
 @media screen and (min-width: 768px) {
-  .profilecancel {
-    max-width: 150px;
-    height: 38px;
+  .profilesave {
+    max-width: 140px;
   }
 }
 
 @media screen and (min-width: 1440px) {
-  .profilecancel {
+  .profilesave {
     max-width: 149px;
     height: 42px;
   }

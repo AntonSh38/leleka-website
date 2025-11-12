@@ -1,5 +1,6 @@
 import { MomDetails } from "@/types/journey";
 import css from "./MomTab.module.css";
+import TaskReminderCard from "../TasksReminderCard/TaskReminderCard";
 
 interface MomTabProps {
   data: MomDetails;
@@ -18,7 +19,7 @@ const CategoryIcon = ({ category }: { category: string }) => {
   const iconId = getIconId(category);
 
   return (
-    <svg className={css.adviceIcon} aria-hidden="true">
+    <svg width={24} height={24} className={css.adviceIcon} aria-hidden="true">
       <use href={`/leleka-sprite.svg#${iconId}`} />
     </svg>
   );
@@ -61,10 +62,9 @@ export default function MomTab({ data }: MomTabProps) {
         </div>
       </div>
 
-      {/* Тут можна додати TasksReminderCard */}
-      {/* <div className={css.taskBlock}>
-        <TasksReminderCard />
-      </div> */}
+      <div>
+        <TaskReminderCard />
+      </div>
     </div>
   );
 }

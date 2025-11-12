@@ -3,12 +3,17 @@
 import Image from "next/image";
 import css from "./DiaryEntryDetails.module.css";
 import { useSelectedNoteStore } from "@/lib/store/selectedNoteStore";
-import { useQueryClient } from "@tanstack/react-query";
-import React from "react";
-import { DiaryNote } from "@/lib/api/diaryApi";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { DiaryNote, deleteNote } from "@/lib/api/diaryApi";
+import { useNoteModalStore } from "@/lib/store/modalNoteStore";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function DiaryEntryDetails() {
   const selectedNote = useSelectedNoteStore((s) => s.selectedNote);
+  const setSelectedNote = useSelectedNoteStore((s) => s.setSelectedNote);
+  const openNoteModal = useNoteModalStore((s) => s.openNoteModal);
+  const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // якщо selectedNote є — беремо її. Інакше пробуємо знайти в кеші ["notes"].
@@ -22,17 +27,61 @@ export default function DiaryEntryDetails() {
 
   const note = selectedNote ?? noteFromCache ?? null;
 
+  // Мутація видалення нотатки
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteNote(id),
+    onMutate: async (id: string) => {
+      // оптимістичне оновлення кешу: видаляємо нотатку з локального кешу
+      await queryClient.cancelQueries({ queryKey: ["notes"] });
+      const previous = queryClient.getQueryData<{ diaryNotes: DiaryNote[] }>([
+        "notes",
+      ]);
+      if (previous) {
+        queryClient.setQueryData<{ diaryNotes: DiaryNote[] }>(["notes"], {
+          ...previous,
+          diaryNotes: previous.diaryNotes.filter((n) => n._id !== id),
+        });
+      }
+      // якщо видалена була поточна вибрана нотатка — очищаємо selection
+      if (selectedNote?._id === id) {
+        setSelectedNote(null);
+      }
+      return { previous };
+    },
+    onError: (
+      err: unknown,
+      id: string,
+      context?: { previous?: { diaryNotes: DiaryNote[] } }
+    ) => {
+      // відкат кешу у випадку помилки
+      if (context?.previous) {
+        queryClient.setQueryData(["notes"], context.previous);
+      }
+      // Тут можна логувати помилку або показати повідомлення користувачу
+      console.error("Delete note failed", err);
+    },
+    onSettled: () => {
+      // оновлюємо/перезапитуємо список нотаток після завершення
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
   if (!note) {
-    return (
-      <section className={css["diary-details-container"]}>
-        <div className={css["diary-details-block"]}>
-          <div className={css["diary-details-placeholder"]}>
-            Оберіть запис щоб побачити деталі
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
+  const handleDelete = (id: string) => {
+    if (!id) return;
+    deleteMutation.mutate(id);
+    setSelectedNote(null);
+  };
+  const handleConfirm = () => {
+    handleDelete(note._id);
+    setIsOpen(false);
+  };
+
+  const handleEdit = (note: DiaryNote) => {
+    setSelectedNote(note); // 1) поставити note в стор
+    openNoteModal(); // 2) відкрити модалку
+  };
 
   return (
     <section className={css["diary-details-container"]}>
@@ -46,8 +95,9 @@ export default function DiaryEntryDetails() {
                 width={24}
                 height={24}
                 alt="edit"
+                className={css["edit-icon"]}
                 onClick={() => {
-                  console.log("edit", note._id);
+                  handleEdit(note);
                 }}
               />
             </div>
@@ -58,8 +108,9 @@ export default function DiaryEntryDetails() {
                 width={24}
                 height={24}
                 alt="delete"
+                className={css["delete-icon"]}
                 onClick={() => {
-                  console.log("delete", note._id);
+                  setIsOpen(true);
                 }}
               />
             </div>
@@ -78,6 +129,14 @@ export default function DiaryEntryDetails() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={isOpen}
+        title="Ви дійсно хочете видалити нотатку?"
+        confirmBtnText="Так, видаляємо"
+        cancelBtnText="Ні, залишаємо"
+        onCancel={() => setIsOpen(false)}
+        onConfirm={handleConfirm}
+      />
     </section>
   );
 }

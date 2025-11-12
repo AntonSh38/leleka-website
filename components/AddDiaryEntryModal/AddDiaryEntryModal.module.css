@@ -2,7 +2,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 50;
+  animation: fadeIn 0.25s ease forwards;
+  backdrop-filter: blur(3px);
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.25);
@@ -22,18 +24,20 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  animation: popUp 0.3s ease forwards;
 }
 
 @media only screen and (min-width: 768px) {
   .modal {
     padding: 64px 32px;
-    max-width: 768px;
+    max-width: 704px;
   }
 }
 
 @media only screen and (min-width: 1440px) {
   .modal {
     padding: 64px 64px;
+    max-width: 768px;
   }
 }
 
@@ -46,7 +50,7 @@
 .closeButton {
   position: absolute;
   top: 36px;
-  right: 36px;
+  right: 20px;
   border: none;
   border-radius: 100%;
   width: 32px;
@@ -56,4 +60,30 @@
   color: #333;
   cursor: pointer;
   background: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .closeButton {
+    right: 32px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
