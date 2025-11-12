@@ -4,7 +4,7 @@ import { Formik, Form, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import styles from "./OnboardingForm.module.css";
 import { useAuthStore } from "@/lib/store/authStore";
-import { updateUser } from "@/lib/api/clientApi";
+import { getUser, updateUser } from "@/lib/api/clientApi";
 import { useState } from "react";
 import { ApiError } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
@@ -43,7 +43,6 @@ const validationSchema = Yup.object({
 const initialValues = { babyGender: "", dueDate: "" };
 
 export default function OnboardingForm({ isLoading }: OnboardingFormProps) {
-  const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const [error, seterror] = useState("");
   const router = useRouter();
@@ -53,12 +52,15 @@ export default function OnboardingForm({ isLoading }: OnboardingFormProps) {
   ) => {
     try {
       const { user: updatedUser } = await updateUser(values);
+      const sessionUser = await getUser();
       setUser({
-        ...user,
+        ...sessionUser,
         ...updatedUser,
       });
       actions.resetForm();
-      router.push("/");
+      setTimeout(() => {
+        router.push("/");
+      }, 0);
     } catch (error) {
       seterror((error as ApiError).message);
     }

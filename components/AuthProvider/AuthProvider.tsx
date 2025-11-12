@@ -22,11 +22,9 @@ const AuthProvider = ({ children }: Props) => {
           const user = await getUser();
           if (user) setUser(user);
         } else {
-          // очищаємо стан тільки після повної перевірки
           clearIsAuthenticated();
         }
       } catch (err) {
-        // логувати; не чистити стан негайно, якщо є сумніви
         console.warn("AuthProvider check error", err);
       } finally {
         if (mounted) setChecking(false);
@@ -38,9 +36,6 @@ const AuthProvider = ({ children }: Props) => {
     };
   }, [setUser, clearIsAuthenticated]);
 
-  // Поки перевіряємо — можна рендерити skeleton або children,
-  // але важливо, щоб компоненти, що залежать від auth, знали про checking.
-  // Можна надати контекст або просто не виконувати clearIsAuthenticated раніше.
   return <>{children}</>;
 };
 export default AuthProvider;
