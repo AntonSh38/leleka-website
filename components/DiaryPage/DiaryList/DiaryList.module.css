@@ -67,7 +67,7 @@
   cursor: pointer;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 1439.8px) {
   .diary-list-container {
     width: 715px;
   }
