@@ -5,7 +5,6 @@ import { useState } from "react";
 import { createTask } from "@/lib/api/taskApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTaskModalStore } from "@/lib/store/taskModalStore";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function AddTaskModal() {
