@@ -60,6 +60,7 @@ export default function OnboardingForm({ isLoading }: OnboardingFormProps) {
       actions.resetForm();
       setTimeout(() => {
         router.push("/");
+        window.location.href = "/";
       }, 0);
     } catch (error) {
       seterror((error as ApiError).message);
