@@ -22,6 +22,9 @@ const comfortaa = Comfortaa({
 export const metadata: Metadata = {
   title: "Leleka",
   description: "Main page of Leleka website for pregnant moms ",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
