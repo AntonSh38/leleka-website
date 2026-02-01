@@ -13,7 +13,6 @@ export async function PATCH(request: Request, { params }: Props) {
   try {
     const cookieStore = await cookies();
     const { noteId } = await params;
-    console.log(noteId);
     const body = await request.json();
 
     const res = await lehlehkaApi.patch(`/diary/${noteId}`, body, {

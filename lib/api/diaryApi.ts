@@ -54,13 +54,11 @@ export const updateNote = async (
   id: string,
   note: NoteDiaryProps
 ): Promise<DiaryNote> => {
-  console.log(note);
   const response = await nextServerApi.patch<DiaryNote>(`/diary/${id}`, note);
   return response.data;
 };
 
 export const deleteNote = async (id: string): Promise<void> => {
-  console.log(id);
   const response = await nextServerApi.delete(`/diary/${id}`, {
     params: { noteId: id },
   });

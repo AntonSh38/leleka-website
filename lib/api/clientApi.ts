@@ -26,13 +26,11 @@ export interface Emotion {
 
 export async function registerUser(userData: UserRegisterData) {
   const res = await nextServerApi.post("/auth/register", userData);
-  console.log("Frontend responce :", res);
   return res;
 }
 
 export async function loginUser(userData: UserLoginData): Promise<User> {
   const res = await nextServerApi.post<User>("/auth/login", userData);
-  console.log(res);
   return res.data;
 }
 
